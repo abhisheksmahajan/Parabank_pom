@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+<!--    <test verbose="2" preserve-order="true" name="/home/knoldus/IdeaProjects/Parabank_Pom">-->
+<!--        <classes><class name="ParabankTest.ParabankTest"><methods><include name="OpenAccount1"/>-->
+<!--            <include name="OpenAccount2"/>-->
+<!--            <include name="Transferfunds1"/>-->
+<!--            <include name="Transferfunds2"/>-->
+<!--            <include name="Paybill1"/>-->
+<!--            <include name="paybill2"/>-->
+<!--            <include name="RequestloanTC1"/>-->
+<!--            <include name="RequestloanTC2"/>-->
+<!--        </methods>-->
+<!--        </class>-->
+<!--        </classes>-->
+<!--    </test>-->
+    <test thread-count="5" name="ChromeTest">
+        <parameter name="browser" value="chrome"></parameter>
+        <classes>
+            <class name="ParabankTest.ParabankTest" />
+        </classes>
+    </test> <!-- Test -->
+
+    <test thread-count="5" name="FirefoxTest">
+        <parameter name="browser" value="firefox"></parameter>
+        <classes>
+            <class name="ParabankTest.ParabankTest" />
+        </classes>
+    </test> <!-- Test -->
+    <test thread-count="5" name="EdgeTest">
+        <parameter name="browser" value="edge"></parameter>
+        <classes>
+            <class name="ParabankTest.ParabankTest" />
+        </classes>
+    </test>
+</suite>

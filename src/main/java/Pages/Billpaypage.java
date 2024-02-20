@@ -35,6 +35,10 @@ public class Billpaypage {
     WebElement fromAccount;
     @FindBy(css = "input[value='Send Payment']")
     WebElement sendPayment;
+    @FindBy(css = "div[ng-app=\"BillPayApp\"]>div[ng-show=\"showForm\"]>.title")
+    WebElement successMsg;
+    @FindBy(css = "tr:nth-of-type(9)>td>span[class=\"error\"]")
+    WebElement errorMsg;
 
     public Billpaypage(WebDriver driver) {
         this.driver = driver;
@@ -77,4 +81,11 @@ public class Billpaypage {
         sendPayment.click();
     }
 
+    public String vrerifyBillpay(){
+        return successMsg.getText();
+    }
+    public String verifyError(){
+        return errorMsg.getText();
+    }
 }
+

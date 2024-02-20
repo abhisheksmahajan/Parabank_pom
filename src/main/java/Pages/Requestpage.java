@@ -13,7 +13,7 @@ import java.time.Duration;
 public class Requestpage {
     WebDriver driver;
     WebDriverWait wait;
-    @FindBy(css=".input.ng-pristine.ng-valid.ng-empty.ng-touched")
+    @FindBy(css="#amount")
     WebElement loanAmount;
     @FindBy(css="#downPayment")
     WebElement downPayment;
@@ -21,6 +21,9 @@ public class Requestpage {
     WebElement fromAccount;
     @FindBy(css = "input[value='Apply Now']")
     WebElement applyNow;
+    @FindBy(css = "#loanStatus")
+    WebElement errorMsg;
+    //@FindBy(css = "")
 
 
     public Requestpage(WebDriver driver) {
@@ -41,5 +44,8 @@ public class Requestpage {
     }
     public  void ClickonApplynow(){
         applyNow.click();
+    }
+    public String VerifyLoanrequest(){
+        return errorMsg.getText();
     }
 }

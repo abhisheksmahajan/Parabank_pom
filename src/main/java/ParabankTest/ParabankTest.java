@@ -1,5 +1,4 @@
 package ParabankTest;
-
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import org.testng.Assert;
@@ -18,8 +17,6 @@ import java.util.List;
 
 public class ParabankTest {
     TextContextSetup tcs;
-    CSVWriter writecsv;
-    CSVReader readcsv;
     FileWriter csvWriter;
     ArrayList<String> Account=new ArrayList<>();
     String a[]= new String[10];
@@ -45,36 +42,20 @@ public class ParabankTest {
             tcs.Setup().GetRegistrationpage().AddPassword(ProjectConfig.Password);
             tcs.Setup().GetRegistrationpage().AddConfirmpassword(ProjectConfig.Password);
             tcs.Setup().GetRegistrationpage().ClickonRegister();
-//            try {
-//
-//                writecsv = new CSVWriter(new FileWriter("Dataset.csv"));
-//                readcsv = new CSVReader(new FileReader("Dataset.csv"));
-//
-//            }catch (IOException e) {
-//
-//                e.printStackTrace();
-//            }
-//            try {
-//
-//               // csvWriter = new FileWriter("Dataset1.csv");
-//            } catch (IOException e) {
-//
-//                e.printStackTrace();
-//            }
+
         }
     }
 
-    @Test(priority = 0)
+    @Test(priority = 0,description = "Verify that User should Create Account.")
     public void OpenAccount1(){
         tcs.Setup().GetHomepage().ClickonOpenaccount();
         tcs.Setup().GetOpenaccountpage().SelectAccounttype("SAVINGS");
-        //tcs.Setup().GetOpenaccountpage().SelectFromAccountid("14010");
         tcs.Setup().GetOpenaccountpage().ClickonOpennewaccount();
         Assert.assertEquals( tcs.Setup().GetOpenaccountpage().isVerify(),"Congratulations, your account is now open.");
         Account.add(tcs.Setup().GetOpenaccountpage().ExtactAccountnumber());
         a[0]= tcs.Setup().GetOpenaccountpage().ExtactAccountnumber();
     }
-    @Test(priority = 1)
+    @Test(priority = 1,description = "Verify that User should Create Multiple Accounts.")
     public void OpenAccount2(){
         int j=5;
         int amount=100;
@@ -144,47 +125,27 @@ public class ParabankTest {
         a[9]= tcs.Setup().GetOpenaccountpage().ExtactAccountnumber();
         tcs.Setup().GetHomepage().ClickonOpenaccount();
         tcs.Setup().GetOpenaccountpage().SelectAccounttype("SAVINGS");
-        //tcs.Setup().GetOpenaccountpage().SelectFromAccountid(Account.get(8));
         tcs.Setup().GetOpenaccountpage().ClickonOpennewaccount();
         Assert.assertEquals( tcs.Setup().GetOpenaccountpage().isVerify(),"Congratulations, your account is now open.");
         Account.add(tcs.Setup().GetOpenaccountpage().ExtactAccountnumber());
-//        for(String A:a){
-//            System.out.println(A);
-//        }
-//        try {
-//
-//            writecsv.writeNext(a);
-//            writecsv.flush();
-//
-//        }catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-        try{
+        try{   // To write Fromaccount,Toaccount and Amount in Dataset.csv
             csvWriter = new FileWriter("Dataset.csv");
             for(i=0; i < 5; i++){
                 csvWriter.append(Account.get(i)+","+Account.get(j)+","+amount);
-//                csvWriter.append(",");
-//                csvWriter.append(Account.get(j));
-//                csvWriter.append(",");
-//                csvWriter.append(Integer.toString(amount));
+
                 csvWriter.append("\n");
 
                 j++;
                 amount+=100;
             }
-//            for (String datum : a) {
-//                csvWriter.append(datum);
-//                csvWriter.append("\n");
-//            }
+
             csvWriter.flush();
-      //      csvWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
-    @Test(priority = 2)
+    @Test(priority = 4,description = "Verify that User should not Tranfer Negitive Digit Amount.")
     public void Transferfunds1(){
         tcs.Setup().GetHomepage().Clickontransferfond();
         tcs.Setup().GetTreansferfuntpage().Addamount("500");
@@ -192,7 +153,7 @@ public class ParabankTest {
         Assert.assertEquals(tcs.Setup().GetTreansferfuntpage().isverify(),"The amount cannot be empty.");
 
     }
-    @Test(priority = 3,dataProvider = "Dataset")
+    @Test(priority = 5,dataProvider = "Dataset",description = "Verify that User should Transfer fund from one Account to another")
     public void Transferfunds2(String fromaccount,String toaccount,String amount){
         tcs.Setup().GetHomepage().Clickontransferfond();
         tcs.Setup().GetTreansferfuntpage().Addamount(amount);
@@ -200,7 +161,7 @@ public class ParabankTest {
         tcs.Setup().GetTreansferfuntpage().SelecttoAccount(toaccount);
         tcs.Setup().GetTreansferfuntpage().ClickonTransfer();
     }
-    @Test(priority = 4)
+    @Test(priority = 2,description = "Verify that user should Pay bill with correct information")
     public void Paybill1(){
     tcs.Setup().GetHomepage().ClickonPaybill();
     tcs.Setup().GetBillpage().AddPayyename("Sunder Narayan");
@@ -214,7 +175,45 @@ public class ParabankTest {
     tcs.Setup().GetBillpage().AddAmount("500");
     tcs.Setup().GetBillpage().SelectAccount(Account.get(2));
     tcs.Setup().GetBillpage().ClickonSendpayment();
+    Assert.assertEquals(tcs.Setup().GetBillpage().vrerifyBillpay(),"Bill Payment Service");
     }
+    @Test(priority = 3,description = "Verify that user should not Pay bill with incorrect information ")
+    public void paybill2(){
+        tcs.Setup().GetHomepage().ClickonPaybill();
+        tcs.Setup().GetBillpage().AddPayyename("Rahul Garg");
+        tcs.Setup().GetBillpage().AddAddress("sector 62");
+        tcs.Setup().GetBillpage().AddCity("Noida");
+        tcs.Setup().GetBillpage().AddState("Uttar Pradesh");
+        tcs.Setup().GetBillpage().AddZipcode("201400");
+        tcs.Setup().GetBillpage().AddPhonnauber("9858774742");
+        tcs.Setup().GetBillpage().AddAccountId(Account.get(1));
+        tcs.Setup().GetBillpage().AddVerifyAccountId(Account.get(2));
+        tcs.Setup().GetBillpage().AddAmount("400");
+        tcs.Setup().GetBillpage().SelectAccount(Account.get(2));
+        tcs.Setup().GetBillpage().ClickonSendpayment();
+        Assert.assertEquals(tcs.Setup().GetBillpage().verifyError(),"The account numbers do not match.");
+
+    }
+    @Test(priority = 6,description = "Verifying Requesting loan with sufficient Downpayment fund")
+    public void RequestloanTC1(){
+        tcs.Setup().GetHomepage().ClickonRequestloan();
+        tcs.Setup().GetRequestpage().Addloanamount("10000");
+        tcs.Setup().GetRequestpage().AddDounpayment("500");
+        tcs.Setup().GetRequestpage().SelectAccount(Account.get(1));
+        tcs.Setup().GetRequestpage().ClickonApplynow();
+        Assert.assertEquals(tcs.Setup().GetRequestpage().VerifyLoanrequest(),"Approved");
+
+    }
+    @Test(priority = 7,description = "Verifying Requesting loan with insufficient Downpayment fund")
+    public void RequestloanTC2(){
+        tcs.Setup().GetHomepage().ClickonRequestloan();
+        tcs.Setup().GetRequestpage().Addloanamount("50000000");
+        tcs.Setup().GetRequestpage().AddDounpayment("1000000");
+        tcs.Setup().GetRequestpage().ClickonApplynow();
+        Assert.assertEquals(tcs.Setup().GetRequestpage().VerifyLoanrequest(),"Denied");
+
+    }
+
 
 
 
