@@ -1,7 +1,9 @@
 package ParabankTest;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import org.checkerframework.checker.units.qual.N;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -212,6 +214,10 @@ public class ParabankTest {
         tcs.Setup().GetRequestpage().ClickonApplynow();
         Assert.assertEquals(tcs.Setup().GetRequestpage().VerifyLoanrequest(),"Denied");
 
+    }
+    @AfterTest()
+    public void Close(){
+        tcs.base.Close();
     }
 
 
